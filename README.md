@@ -59,7 +59,7 @@ python main.py
 ## 运行测试
 
 ```bash
-pytest -q
+python -m pytest -q
 ```
 
 ## 学习时重点看哪里
