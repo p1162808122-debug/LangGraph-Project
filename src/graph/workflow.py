@@ -1,14 +1,22 @@
-from langgraph.graph import StateGraph
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.graph import END, START, StateGraph
 
+from .nodes import finish_node, prepare_node, process_node
 from .state import AgentState
-from .nodes import process_node
 
 
 def build_graph():
-    graph = StateGraph(AgentState)
+    """Build and compile the learning graph."""
+    builder = StateGraph(AgentState)
 
-    graph.add_node("process", process_node)
-    graph.set_entry_point("process")
-    graph.set_finish_point("process")
+    builder.add_node("prepare", prepare_node)
+    builder.add_node("process", process_node)
+    builder.add_node("finish", finish_node)
 
-    return graph.compile()
+    builder.add_edge(START, "prepare")
+    builder.add_edge("prepare", "process")
+    builder.add_edge("process", "finish")
+    builder.add_edge("finish", END)
+
+    checkpointer = InMemorySaver()
+    return builder.compile(checkpointer=checkpointer)

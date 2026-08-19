@@ -1,4 +1,2 @@
-langgraph
-langchain
-langchain-openai
-python-dotenv
+langgraph>=1.0,<2.0
+pytest>=8,<9
